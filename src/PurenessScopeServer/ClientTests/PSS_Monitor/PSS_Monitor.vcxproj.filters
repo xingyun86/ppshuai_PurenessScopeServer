@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main">
+      <UniqueIdentifier>{f33d9795-7464-4bb8-9e03-8b8d44850d8d}</UniqueIdentifier>
+      <Extensions>cpp;cxx;cc;c;C</Extensions>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{9397064f-9139-4365-be39-1629a3f6060d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\cppfile">
+      <UniqueIdentifier>{bd3aaf2e-a44b-4502-bb8b-34ef6a1ce7a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\hfile">
+      <UniqueIdentifier>{44d764f0-e00a-447d-8992-24689c415d54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Build Files">
+      <UniqueIdentifier>{f89cb4b1-2178-4f35-96e9-291251bf5171}</UniqueIdentifier>
+      <Extensions>mpc;mpb;mwc</Extensions>
+    </Filter>
+    <Filter Include="Mail">
+      <UniqueIdentifier>{ca69e26c-a104-47ea-aea6-b8f00e1b6d74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mail\cppfile">
+      <UniqueIdentifier>{ba9789a9-56b8-4506-9563-cd0efee84520}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mail\hfile">
+      <UniqueIdentifier>{f08b260c-790f-4668-829a-9f310595de5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Proactor">
+      <UniqueIdentifier>{680f5afa-133a-4a90-93fe-3301ddd2924b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Proactor\cppfile">
+      <UniqueIdentifier>{04046bc0-353b-45ef-ba42-ee208b70e60b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Proactor\hfile">
+      <UniqueIdentifier>{067288ca-61b7-4c06-9e46-2f06779b8e3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reactor">
+      <UniqueIdentifier>{2db64c9d-7142-4f67-a76b-36c722b221a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reactor\cppfile">
+      <UniqueIdentifier>{03d158b1-298a-45ba-9894-d5a69b040516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reactor\hfile">
+      <UniqueIdentifier>{dc40301e-e8bf-40ee-a762-5dd834dea564}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XML">
+      <UniqueIdentifier>{b6c7aeb8-d50d-4129-ae0f-6288187a9cd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XML\cppfile">
+      <UniqueIdentifier>{48912b82-1e30-48da-a077-1e5d5059724d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XML\hfile">
+      <UniqueIdentifier>{d6f943cb-f740-4318-b3b5-8fa667c0603e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PSS_Monitor.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\LogFile.cpp">
+      <Filter>Common\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\MainConfig.cpp">
+      <Filter>Common\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\MessageBlockManager.cpp">
+      <Filter>Common\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\MonitorFSM.cpp">
+      <Filter>Common\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\MonitorFSMManager.cpp">
+      <Filter>Common\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\XmlOpeation.cpp">
+      <Filter>Common\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Mail\base64.cpp">
+      <Filter>Mail\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Mail\smtp.cpp">
+      <Filter>Mail\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Proactor\AceProactorManager.cpp">
+      <Filter>Proactor\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Proactor\ClientProConnectManager.cpp">
+      <Filter>Proactor\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Proactor\ProAsynchConnect.cpp">
+      <Filter>Proactor\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Proactor\ProConnectClient.cpp">
+      <Filter>Proactor\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Reactor\AceReactorManager.cpp">
+      <Filter>Reactor\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Reactor\ClientReConnectManager.cpp">
+      <Filter>Reactor\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Reactor\ConnectClient.cpp">
+      <Filter>Reactor\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\MailManager.cpp">
+      <Filter>Common\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\Utils\XML\tinystr.cpp">
+      <Filter>XML\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\Utils\XML\tinyxml.cpp">
+      <Filter>XML\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\Utils\XML\tinyxmlparser.cpp">
+      <Filter>XML\cppfile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\Utils\XML\tinyxmlerror.cpp">
+      <Filter>XML\cppfile</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common\ClientMessage.h">
+      <Filter>Common\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\define.h">
+      <Filter>Common\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IMessageBlockManager.h">
+      <Filter>Common\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ITimerManager.h">
+      <Filter>Common\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\LogFile.h">
+      <Filter>Common\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MainConfig.h">
+      <Filter>Common\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MessageBlockManager.h">
+      <Filter>Common\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MonitorFSM.h">
+      <Filter>Common\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MonitorFSMManager.h">
+      <Filter>Common\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\TimerManager.h">
+      <Filter>Common\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\XmlOpeation.h">
+      <Filter>Common\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Mail\base64.h">
+      <Filter>Mail\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Mail\smtp.h">
+      <Filter>Mail\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Proactor\AceProactorManager.h">
+      <Filter>Proactor\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Proactor\ClientProConnectManager.h">
+      <Filter>Proactor\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Proactor\ProAsynchConnect.h">
+      <Filter>Proactor\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Proactor\ProConnectClient.h">
+      <Filter>Proactor\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Reactor\AceReactorManager.h">
+      <Filter>Reactor\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Reactor\ClientReConnectManager.h">
+      <Filter>Reactor\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Reactor\ConnectClient.h">
+      <Filter>Reactor\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MailManager.h">
+      <Filter>Common\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\Utils\XML\tinystr.h">
+      <Filter>XML\hfile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\Utils\XML\tinyxml.h">
+      <Filter>XML\hfile</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="makefile.mpc">
+      <Filter>Build Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

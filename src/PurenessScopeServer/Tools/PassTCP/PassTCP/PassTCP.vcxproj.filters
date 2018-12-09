@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="ClientTcpSocket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientUdpSocket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PassTCP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PassTCPDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\Utils\XML\tinystr.cpp">
+      <Filter>XML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\Utils\XML\tinyxml.cpp">
+      <Filter>XML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\Utils\XML\tinyxmlerror.cpp">
+      <Filter>XML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\Utils\XML\tinyxmlparser.cpp">
+      <Filter>XML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\Utils\LUA\LuaFn.cpp">
+      <Filter>LUA</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ClientTcpSocket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientUdpSocket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PassTCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PassTCPDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\Utils\XML\tinystr.h">
+      <Filter>XML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\Utils\XML\tinyxml.h">
+      <Filter>XML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\Utils\LUA\LuaDefine.h">
+      <Filter>LUA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\Utils\LUA\LuaFn.h">
+      <Filter>LUA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\Utils\LUA\LuaFn_Tcp.h">
+      <Filter>LUA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\Utils\LUA\LuaFnRegister.h">
+      <Filter>LUA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\Utils\LUA\ParamData.h">
+      <Filter>LUA</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{475bf37e-fd70-4d99-a77a-1128407c87c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{0032e913-ecda-4fa9-b4b8-ab7dfffe5486}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{8f0684e1-e8e9-40c4-a77e-1639730f0562}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XML">
+      <UniqueIdentifier>{13a66107-d823-4b11-aba3-6a47cfe816e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LUA">
+      <UniqueIdentifier>{708268a2-53b9-414d-a9ee-f1aceeb0b0ba}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\PassTCP.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PassTCP.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\PassTCP.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

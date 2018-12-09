@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>WebSocket验证测试</title>
+    <style type="text/css">
+        .align-center {
+            margin: 10 auto;
+            /* 居中 这个是必须的，，其它的属性非必须 */
+            width: 100%;
+            /* 给个宽度 顶到浏览器的两边就看不出居中效果了 */
+            background: white;
+            /* 背景色 */
+            text-align: center;
+            /* 文字等内容居中 */
+        }
+        .dotted {
+            border-style: dotted
+        }
+        .dashed {
+            border-style: dashed
+        }
+        .solid {
+            border-style: solid
+        }
+        .double {
+            border-style: double
+        }
+        .groove {
+            border-style: groove
+        }
+        .ridge {
+            border-style: ridge
+        }
+        .inset {
+            border-style: inset
+        }
+        .outset {
+            border-style: outset
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+    <script src="js/pako.min.js"></script>
+</head>
+<body>
+    <script>
+        function gzip_uncompress_blob(blob, result) {
+            //let result = '';
+            let reader = new FileReader();
+            //FileReader：从Blob对象中读取数据
+            reader.onloadend = function (e) {
+                //pako.inflate()对数据进行解压，得到正常的json对象
+                result = pako.inflate(reader.result, { to: 'string' });
+            }
+            reader.readAsBinaryString(blob);
+            //return result;
+        }
+        function gzip_uncompress_string(str) {
+            return pako.inflate(str, { to: 'string' });
+        }
+        function gzip_compress_string_ex(str) {
+            return pako.deflate(escape(str), { to: 'string' });
+        }
+        function gzip_compress_string(str) {
+            return pako.gzip(escape(str), { to: 'string' });
+        }
+        //将字符串转换成十六进制形式，中间用空格隔开
+        function StringToHex(str) {
+            var result = [];
+            var list = str.split("");
+            for (var i = 0; i < list.length; i++) {
+                if (i != 0) {
+                    result.push(" ");
+                }
+                var item = list[i];
+                var binaryStr = item.charCodeAt().toString(16);
+                result.push(binaryStr);
+            }
+            return result.join("");
+        }
+        //将十六进制字符串转换成Unicode字符串
+        function HexToString(str) {
+            var result = [];
+            var list = str.split(" ");
+            for (var i = 0; i < list.length; i++) {
+                var item = list[i];
+                var asciiCode = parseInt(item, 16);
+                var charValue = String.fromCharCode(asciiCode);
+                result.push(charValue);
+            }
+            return result.join("");
+        }
+        //将字符串转换成二进制形式，中间用空格隔开
+        function StringToBinary(str) {
+            var result = [];
+            var list = str.split("");
+            for (var i = 0; i < list.length; i++) {
+                if (i != 0) {
+                    result.push(" ");
+                }
+                var item = list[i];
+                var binaryStr = item.charCodeAt().toString(2);
+                result.push(binaryStr);
+            }
+            return result.join("");
+        }
+        //将二进制字符串转换成Unicode字符串
+        function BinaryToString(str) {
+            var result = [];
+            var list = str.split(" ");
+            for (var i = 0; i < list.length; i++) {
+                var item = list[i];
+                var asciiCode = parseInt(item, 2);
+                var charValue = String.fromCharCode(asciiCode);
+                result.push(charValue);
+            }
+            return result.join("");
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            var ws = null;
+            $("#sendmsg-gzip").attr("checked",false);
+            $("#start-server-btn").click(function () {
+                // 打开一个 web socket
+                ws = new WebSocket($("#server-addr").val());
+                ws.onopen = function () {
+                    // Web Socket 已连接上，使用 send() 方法发送数据
+                    $("#service-quote-status").text("服务已连接");
+                };
+                ws.onmessage = function (evt) {
+                    let result = "";
+                    console.log(evt.data);
+                    if ($("#recvmsg-gzip").is(':checked')) {
+                        if (evt.data instanceof Blob) {
+                            let result = '';
+                            let reader = new FileReader();
+                            //FileReader：从Blob对象中读取数据
+                            reader.onloadend = function (e) {
+                                //pako.inflate()对数据进行解压，得到正常的json对象
+                                result = pako.inflate(reader.result, { to: 'string' });
+                                $("#service-quote-status").text(result);
+                                console.log("result=" + result);
+                            }
+                            reader.readAsBinaryString(evt.data);
+                        }
+                    }
+                    else {
+                        $("#service-quote-status").text(evt.data);
+                    }
+                };
+                ws.onclose = function () {
+                    // 关闭 websocket
+                    $("#service-quote-status").text("服务已断开");
+                };
+                //=======================================================================
+            });
+            $("#stop-server-btn").click(function () {
+                console.log("Websocket close...");
+                ws.close();
+            });
+            //发送消息
+            $("#sendmsg-btn").click(function () {
+                console.log("sendmsg...");
+                let msg = $("#sendmsg-txt").val();
+                console.log(msg);
+                if ($("#sendmsg-gzip").is(':checked')) {
+                    var gzip_msg = new Uint8Array(pako.gzip(msg));
+                    ws.send(gzip_msg.buffer);
+                }
+                else {
+                    ws.send(msg);
+                }
+            });
+        });
+    </script>
+    <div name="main" class="align-center">
+        <div id="websocket-quote">
+            服务器地址:
+            <input id="server-addr" type="text" value="ws://192.168.31.124:2021">
+            <br>
+            <button id="start-server-btn">连接</button>
+            <button id="stop-server-btn">断开</button>
+        </div>
+        <HR>
+        <div id="websocket-quote-state">
+            输入要发送的消息:
+            <br>
+            <input id="sendmsg-gzip" type="checkbox" checked="true" />发送启用gzip</p>
+            <input id="recvmsg-gzip" type="checkbox" checked="true" />接收启用gzip</p>
+            <textarea id="sendmsg-txt" rows="10%" cols="50%">{"cmd":100,"params":{"symbols":["BTCUSDT"]}}</textarea>
+            <button id="sendmsg-btn">发送</button>
+            <br>
+            <span id="service-quote-status">状态信息 </span>
+            <br>
+        </div>
+        <HR>
+    </div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+﻿<!DOCTYPE HTML>
+<html>
+   <head>
+   <meta charset="utf-8">
+   <title>MT5后台验证测试</title>
+    
+      <script type="text/javascript">
+       	 var server_host="127.0.0.1";
+         function WebSocketTestSSL()
+         {
+            if ("WebSocket" in window)
+            {
+               //alert("您的浏览器支持 WebSocket!");
+               
+               // 打开一个 web socket
+               var ws = new WebSocket("wss://" + server_host + ":10002");
+                
+               ws.onopen = function()
+               {
+                  // Web Socket 已连接上，使用 send() 方法发送数据
+                  ws.send("senddata");
+                  writeToScreenSSL("数据发送中...");
+               };
+                
+               ws.onmessage = function (evt) 
+               { 
+                  var received_msg = evt.data;
+                  writeToScreenSSL('<span style="color: blue;">RESPONSE: '+ evt.data+'</span>');
+                  writeToScreenSSL("数据已接收...");
+               };
+                
+               ws.onclose = function()
+               { 
+                  // 关闭 websocket
+                  //alert("连接已关闭..."); 
+                  writeToScreenSSL("连接已关闭...");
+               };
+            }
+            else
+            {
+               // 浏览器不支持 WebSocket
+               alert("您的浏览器不支持 WebSocket!");
+            }
+         }
+    		function WebSocketTestNOSSL()
+         {
+            if ("WebSocket" in window)
+            {
+               //alert("您的浏览器支持 WebSocket!");
+               
+               // 打开一个 web socket
+               var ws = new WebSocket("ws://" + server_host + ":10002");
+                
+               ws.onopen = function()
+               {
+                  // Web Socket 已连接上，使用 send() 方法发送数据
+                  ws.send("senddata");
+                  writeToScreenNoSSL("数据发送中...");
+               };
+                
+               ws.onmessage = function (evt) 
+               { 
+                  var received_msg = evt.data;
+                  writeToScreenNoSSL('<span style="color: blue;">RESPONSE: '+ evt.data+'</span>');
+                  writeToScreenNoSSL("数据已接收...");
+               };
+                
+               ws.onclose = function()
+               { 
+                  // 关闭 websocket
+                  //alert("连接已关闭..."); 
+                  writeToScreenNoSSL("连接已关闭...");
+               };
+            }
+            else
+            {
+               // 浏览器不支持 WebSocket
+               alert("您的浏览器不支持 WebSocket!");
+            }
+         }          
+        function writeToScreenSSL(message) { 
+	        var pre = document.createElement("p"); 
+	        pre.style.wordWrap = "break-word"; 
+	        pre.innerHTML = message;
+	        outputssl.appendChild(pre);
+          //outputssl.html(pre);
+    		}   
+        function writeToScreenNoSSL(message) { 
+	        var pre = document.createElement("p"); 
+	        pre.style.wordWrap = "break-word"; 
+	        pre.innerHTML = message;
+	        outputnossl.appendChild(pre);
+          //outputnossl.html(pre);
+    		}  
+      </script>
+        
+   </head>
+   <body>
+   
+      <div id="sse">
+         <a href="javascript:WebSocketTestSSL()">运行 SSL WebSocket</a>
+          <h2>WebSocket SSL Test</h2>  
+					<div id="outputssl"></div>  
+      </div>
+      <div id="sse1">
+         <a href="javascript:WebSocketTestNOSSL()">运行 NOSSL WebSocket</a>
+          <h2>WebSocket NOSSL Test</h2>  
+					<div id="outputnossl"></div>  
+      </div>
+   </body>
+</html>
