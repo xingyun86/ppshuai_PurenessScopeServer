@@ -1,0 +1,2 @@
+# ppshuai_PurenessScopeServer
+基于ACE的windows后台服务器架构项目，集大成者.同时支持32和64位，TCP\UDP\WebSocket等自定义协议
