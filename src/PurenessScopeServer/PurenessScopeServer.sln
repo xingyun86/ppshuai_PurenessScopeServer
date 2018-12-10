@@ -73,6 +73,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PurenessScopeServer", "Pure
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LGLogic", "PurenessScopeServer\Example-Module\LGLogic\LGLogic.vcxproj", "{1D87DD85-FECA-1BAD-91F1-C2590000002E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PurenessLine", "Tools\PurenessLine\PurenessLine\PurenessLine.vcxproj", "{B7026F9B-F4D0-4008-80D1-A9CE0E910C1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -297,6 +299,14 @@ Global
 		{1D87DD85-FECA-1BAD-91F1-C2590000002E}.Release|Win32.Build.0 = Release|Win32
 		{1D87DD85-FECA-1BAD-91F1-C2590000002E}.Release|x64.ActiveCfg = Release|x64
 		{1D87DD85-FECA-1BAD-91F1-C2590000002E}.Release|x64.Build.0 = Release|x64
+		{B7026F9B-F4D0-4008-80D1-A9CE0E910C1D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B7026F9B-F4D0-4008-80D1-A9CE0E910C1D}.Debug|Win32.Build.0 = Debug|Win32
+		{B7026F9B-F4D0-4008-80D1-A9CE0E910C1D}.Debug|x64.ActiveCfg = Debug|x64
+		{B7026F9B-F4D0-4008-80D1-A9CE0E910C1D}.Debug|x64.Build.0 = Debug|x64
+		{B7026F9B-F4D0-4008-80D1-A9CE0E910C1D}.Release|Win32.ActiveCfg = Release|Win32
+		{B7026F9B-F4D0-4008-80D1-A9CE0E910C1D}.Release|Win32.Build.0 = Release|Win32
+		{B7026F9B-F4D0-4008-80D1-A9CE0E910C1D}.Release|x64.ActiveCfg = Release|x64
+		{B7026F9B-F4D0-4008-80D1-A9CE0E910C1D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -332,5 +342,6 @@ Global
 		{508EBF92-0B99-435B-B95E-DAE1C941CC95} = {45D4F1EB-81BB-4E77-9106-3F689F5610DD}
 		{F5BFBE54-E2D1-46AA-96C1-090ACC0CF420} = {45D4F1EB-81BB-4E77-9106-3F689F5610DD}
 		{1D87DD85-FECA-1BAD-91F1-C2590000002E} = {EC9DBD53-8A11-4A91-B6B8-F69ED5C14D7B}
+		{B7026F9B-F4D0-4008-80D1-A9CE0E910C1D} = {45D4F1EB-81BB-4E77-9106-3F689F5610DD}
 	EndGlobalSection
 EndGlobal
