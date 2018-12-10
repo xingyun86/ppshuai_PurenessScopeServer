@@ -14,7 +14,7 @@ CLogFile::~CLogFile()
 {
 	if(NULL != m_pFile)
 	{
-		fclose(m_pFile);
+		ACE_OS::fclose(m_pFile);
 		m_pFile = NULL;
 	}
 }
@@ -77,7 +77,7 @@ void CLogFile::CreateFile(ACE_Date_Time& dt)
 		blFileExist = true;
 	}
 
-	m_pFile = fopen(m_szCurrFilePath, "a+");
+	m_pFile = ACE_OS::fopen(m_szCurrFilePath, "a+");
 	if(NULL == m_pFile)
 	{
 		OUR_DEBUG((LM_INFO, "[CLogFile::CreateFile]file create error(%s)(%d).", m_szCurrFilePath, errno));
@@ -102,7 +102,7 @@ void CLogFile::ReWriteFile()
 	FILE* pNewFile = NULL;
 	char* pBuff    = NULL;
 	int nFileSize  = 0;
-	pNewFile = fopen(m_szCurrFilePath, "rb");
+	pNewFile = ACE_OS::fopen(m_szCurrFilePath, "rb");
 
 	//读取旧文件
 	if(NULL != pNewFile)
@@ -114,7 +114,7 @@ void CLogFile::ReWriteFile()
 		ACE_OS::fseek(pNewFile, 0L, SEEK_SET);
 
 		pBuff = new char[nFileSize + 1];
-		memset(pBuff, 0, nFileSize + 1);
+		ACE_OS::memset(pBuff, 0, nFileSize + 1);
 
 		ACE_OS::fread(pBuff, nFileSize, sizeof(char), pNewFile);
 		pBuff[nFileSize - 8] = '\0';
@@ -124,7 +124,7 @@ void CLogFile::ReWriteFile()
 	}
 
 	//写入新文件
-	pNewFile = fopen(m_szCurrFilePath, "wb+");
+	pNewFile = ACE_OS::fopen(m_szCurrFilePath, "wb+");
 	if(NULL != pNewFile)
 	{
 		ACE_OS::fwrite(pBuff, ACE_OS::strlen(pBuff), sizeof(char), pNewFile);
@@ -153,7 +153,7 @@ void CLogFile::DoLog(const char* fmt, ...)
 	//文件清理移位，为了兼容XML格式
 	ReWriteFile();
 
-	m_pFile = fopen(m_szCurrFilePath, "a+");
+	m_pFile = ACE_OS::fopen(m_szCurrFilePath, "a+");
 	if(NULL != m_pFile)
 	{
 		//计入日志
@@ -168,8 +168,6 @@ void CLogFile::DoLog(const char* fmt, ...)
 		ACE_OS::fclose(m_pFile);
 		m_pFile = NULL;
 	}
-
-
 }
 
 
