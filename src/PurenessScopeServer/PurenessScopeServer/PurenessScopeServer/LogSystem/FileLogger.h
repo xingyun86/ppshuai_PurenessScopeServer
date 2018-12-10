@@ -384,7 +384,7 @@ public:
         sprintf_safe(m_szLogTime, MAX_TIME_SIZE, "%04d-%02d-%02d", dt.year(), dt.month(), dt.day());
 
         ACE_TString strLogModulePath = m_szFileRoot;
-        ACE_TString strLogName       = strLogModulePath + "/Log/" + m_StrlogType + "/" + m_StrlogName + "/" + m_StrServerName + m_StrlogName + szDateBuff;
+        ACE_TString strLogName       = strLogModulePath + "Log/" + m_StrlogType + "/" + m_StrlogName + "/" + m_StrServerName + m_StrlogName + szDateBuff;
 
         m_File.close();
 
@@ -421,28 +421,37 @@ public:
     {
         int n4Return = -1;
         char szPath[MAX_CMD_NUM] = {'\0'};
-        sprintf_safe(szPath, MAX_CMD_NUM, "%s/Log/", m_szFileRoot);
+        sprintf_safe(szPath, MAX_CMD_NUM, "%sLog/", m_szFileRoot);
+        n4Return = ACE_OS::mkdir(szPath);
+		
+		if (-1 == n4Return)
+		{
+			if (ACE_OS::access(szPath, 0) != 0)
+			{
+				OUR_DEBUG((LM_INFO, "[ServerLogger](%s)CreatePath fail.\n", szPath));
+			}
+		}
+
+        sprintf_safe(szPath, MAX_CMD_NUM, "%sLog/%s/", m_szFileRoot, m_StrlogType.c_str());
+        n4Return = ACE_OS::mkdir(szPath);
+
+		if (-1 == n4Return)
+		{
+			if (ACE_OS::access(szPath, 0) != 0)
+			{
+				OUR_DEBUG((LM_INFO, "[ServerLogger](%s)CreatePath fail.\n", szPath));
+			}
+		}
+
+        sprintf_safe(szPath, MAX_CMD_NUM, "%sLog/%s/%s", m_szFileRoot, m_StrlogType.c_str(), m_StrlogName.c_str());
         n4Return = ACE_OS::mkdir(szPath);
 
         if(-1 == n4Return)
         {
-            OUR_DEBUG((LM_INFO, "[ServerLogger](%s)CreatePath fail.\n", szPath));
-        }
-
-        sprintf_safe(szPath, MAX_CMD_NUM, "%s/Log/%s/", m_szFileRoot, m_StrlogType.c_str());
-        n4Return = ACE_OS::mkdir(szPath);
-
-        if(-1 == n4Return)
-        {
-            OUR_DEBUG((LM_INFO, "[ServerLogger](%s)CreatePath fail.\n", szPath));
-        }
-
-        sprintf_safe(szPath, MAX_CMD_NUM, "%s/Log/%s/%s", m_szFileRoot, m_StrlogType.c_str(), m_StrlogName.c_str());
-        n4Return = ACE_OS::mkdir(szPath);
-
-        if(-1 == n4Return)
-        {
-            OUR_DEBUG((LM_INFO, "[ServerLogger](%s)CreatePath fail.\n", szPath));
+			if (ACE_OS::access(szPath, 0) != 0)
+			{
+				OUR_DEBUG((LM_INFO, "[ServerLogger](%s)CreatePath fail.\n", szPath));
+			}
         }
     }
 
