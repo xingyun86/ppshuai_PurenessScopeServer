@@ -1055,11 +1055,11 @@ bool CMessageServiceGroup::CheckCPUAndMemory()
     if (App_MainConfig::instance()->GetMonitor() == 1)
     {
 #ifdef WIN32
-        uint32 u4CurrCpu = (uint32)GetProcessCPU_Idel();
-        //uint32 u4CurrMemory = (uint32)GetProcessMemorySize();
+        double d8CurrCpu = (double)GetProcessCPU_Idle();
+        //uint64 u4CurrMemory = (uint64)GetProcessMemorySize();
 #else
-        uint32 u4CurrCpu = (uint32)GetProcessCPU_Idel_Linux();
-        //uint32 u4CurrMemory = (uint32)GetProcessMemorySize_Linux();
+		double d8CurrCpu = (double)GetProcessCPU_Idle_Linux();
+        //uint64 u4CurrMemory = (uint64)GetProcessMemorySize_Linux();
 #endif
 
         //获得相关Messageblock,BuffPacket,MessageCount,内存大小
@@ -1067,14 +1067,14 @@ bool CMessageServiceGroup::CheckCPUAndMemory()
         uint32 u4BuffPacketCount = App_BuffPacketManager::instance()->GetBuffPacketUsedCount();
         uint32 u4MessageCount = GetUsedMessageCount();
 
-        if (u4CurrCpu > App_MainConfig::instance()->GetCpuMax() || u4MessageBlockUsedSize > App_MainConfig::instance()->GetMemoryMax())
+        if (d8CurrCpu > App_MainConfig::instance()->GetCpuMax() || u4MessageBlockUsedSize > App_MainConfig::instance()->GetMemoryMax())
         {
-            OUR_DEBUG((LM_INFO, "[CMessageServiceGroup::handle_timeout]CPU Rote=%d,MessageBlock=%d,u4BuffPacketCount=%d,u4MessageCount=%d ALERT.\n", u4CurrCpu, u4MessageBlockUsedSize, u4BuffPacketCount, u4MessageCount));
-            AppLogManager::instance()->WriteLog(LOG_SYSTEM_MONITOR, "[Monitor] CPU Rote=%d,MessageBlock=%d,u4BuffPacketCount=%d,u4MessageCount=%d.", u4CurrCpu, u4MessageBlockUsedSize, u4BuffPacketCount, u4MessageCount);
+            OUR_DEBUG((LM_INFO, "[CMessageServiceGroup::handle_timeout]CPU Rote=%lg,MessageBlock=%d,u4BuffPacketCount=%d,u4MessageCount=%d ALERT.\n", d8CurrCpu, u4MessageBlockUsedSize, u4BuffPacketCount, u4MessageCount));
+            AppLogManager::instance()->WriteLog(LOG_SYSTEM_MONITOR, "[Monitor] CPU Rote=%lg,MessageBlock=%d,u4BuffPacketCount=%d,u4MessageCount=%d.", d8CurrCpu, u4MessageBlockUsedSize, u4BuffPacketCount, u4MessageCount);
         }
         else
         {
-            OUR_DEBUG((LM_INFO, "[CMessageServiceGroup::handle_timeout]CPU Rote=%d,MessageBlock=%d,u4BuffPacketCount=%d,u4MessageCount=%d OK.\n", u4CurrCpu, u4MessageBlockUsedSize, u4BuffPacketCount, u4MessageCount));
+            OUR_DEBUG((LM_INFO, "[CMessageServiceGroup::handle_timeout]CPU Rote=%lg,MessageBlock=%d,u4BuffPacketCount=%d,u4MessageCount=%d OK.\n", d8CurrCpu, u4MessageBlockUsedSize, u4BuffPacketCount, u4MessageCount));
         }
     }
 

@@ -1,6 +1,6 @@
 #include "LinuxCPU.h"
 
-int32 GetProcessCPU_Idel_Linux()
+double GetProcessCPU_Idle_Linux()
 {
     int32 nRet = 0;
     ACE_TString strcmd ="ps -aux | grep ";
@@ -15,24 +15,25 @@ int32 GetProcessCPU_Idel_Linux()
 
     if (nRet == -1)
     {
-        return 0;
+        return (double)(0.0f);
     }
 
-    char szbuffer[50];
+    char szbuffer[MAX_BUFF_50];
 
     FILE* fd = ACE_OS::fopen("aasnowy.txt","r");
 
     if (NULL == fd)
     {
-        return -1;
+        return (double)(0.0f);
     }
 
-    char* pReturn = fgets(szbuffer,sizeof(szbuffer),fd);
-
-    if (NULL == pReturn)
+    char* pReturn = ACE_OS::fgets(szbuffer,sizeof(szbuffer)/sizeof(*szbuffer),fd);
+	
+	ACE_OS::fclose(fd);
+    
+	if (NULL == pReturn)
     {
-        fclose(fd);
-        return -1;
+        return (double)(0.0f);
     }
 
     //切分出CPU数据
@@ -49,23 +50,22 @@ int32 GetProcessCPU_Idel_Linux()
         }
     }
 
-    char szTmp[50] = {'\0'};
+    char szTmp[MAX_BUFF_50] = {'\0'};
 
     if(blFlag == true)
     {
-        memcpy_safe(&szbuffer[i], (uint32)nLen - i, szTmp, (uint32)50);
+        memcpy_safe(&szbuffer[i], (uint32)nLen - i, szTmp, (uint32)MAX_BUFF_50);
         szTmp[nLen - i] = '\0';
     }
 
-    float fcpu;
-    fcpu = (float)atof(szTmp);
-    fclose(fd);
+	double dCpu = 0.0f;
+	dCpu = (double)ACE_OS::strtod(szTmp, 0);
     nRet = system("rm -rf aasnowy.txt");
 
-    return (int32)(fcpu*100);
+    return (double)(dCpu);
 }
 
-int32 GetProcessMemorySize_Linux()
+uint64 GetProcessMemorySize_Linux()
 {
     int32 nRet = 0;
     ACE_TString strcmd ="ps -aux | grep ";
@@ -76,27 +76,28 @@ int32 GetProcessMemorySize_Linux()
     strcmd += strpid;
     ACE_TString strMem = strcmd;
     strMem +="  |awk '{print $2,$6}' >> aasnowy.txt";
-    nRet = system(strMem.c_str()); //获取内存命令
+    nRet = ACE_OS::system(strMem.c_str()); //获取内存命令
 
     if (-1 == nRet)
     {
-        return -1;
+        return (0LL);
     }
 
-    char szbuffer[50];
+    char szbuffer[MAX_BUFF_50];
     FILE* fd = ACE_OS::fopen("aasnowy.txt","r");
 
     if (NULL == fd)
     {
-        return -1;
+        return (0LL);
     }
 
-    char* pReturn = fgets(szbuffer,sizeof(szbuffer),fd);
+    char* pReturn = ACE_OS::fgets(szbuffer,sizeof(szbuffer),fd);
+
+	ACE_OS::fclose(fd);
 
     if (NULL == pReturn)
     {
-        fclose(fd);
-        return -1;
+        return (0LL);
     }
 
     //切分出内存数据
@@ -113,17 +114,17 @@ int32 GetProcessMemorySize_Linux()
         }
     }
 
-    char szTmp[50] = {'\0'};
+    char szTmp[MAX_BUFF_50] = {'\0'};
 
     if(blFlag == true)
     {
-        memcpy_safe(&szbuffer[i], (uint32)nLen - i, szTmp, (uint32)50);
+        memcpy_safe(&szbuffer[i], (uint32)nLen - i, szTmp, (uint32)MAX_BUFF_50);
         szTmp[nLen - i] = '\0';
     }
 
-    int32 nMem = 0;
-    nMem = atoi(szTmp);
-    fclose(fd);
+    uint64 nMem = 0LL;
+    nMem = ACE_OS::strtoull(szTmp, NULL, 0xA);
+
     nRet = system("rm -rf aasnowy.txt");
 
     return nMem * 1000;

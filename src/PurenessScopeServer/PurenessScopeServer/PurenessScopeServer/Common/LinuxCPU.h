@@ -3,8 +3,8 @@
 
 #include "define.h"
 
-int32 GetProcessCPU_Idel_Linux();
+double GetProcessCPU_Idle_Linux();
 
-int32 GetProcessMemorySize_Linux();
+uint64 GetProcessMemorySize_Linux();
 
 #endif

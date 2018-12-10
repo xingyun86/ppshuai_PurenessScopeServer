@@ -59,7 +59,7 @@ CMainConfig::CMainConfig(void)
     m_u4SendBlockCount      = 10;
 
     //默认的CPU监控和内存监控的上限
-    m_u4MaxCpu              = 90;
+    m_d8MaxCpu              = 90.0f;
     m_u4MaxMemory           = 2000;
 
     m_u1CommandFlow         = 0;
@@ -1136,7 +1136,7 @@ bool CMainConfig::Init_Main(const char* szConfigPath)
 
     if(pData != NULL)
     {
-        m_u4MaxCpu = (uint32)ACE_OS::atoi(pData);
+		m_d8MaxCpu = (double)ACE_OS::strtod(pData, 0);
     }
 
     pData = m_MainConfig.GetData("Monitor", "MemoryMax");
@@ -1700,12 +1700,12 @@ uint16 CMainConfig::GetTrackIPCount()
     return m_u4TrackIPCount;
 }
 
-uint32 CMainConfig::GetCpuMax()
+double CMainConfig::GetCpuMax()
 {
-    return m_u4MaxCpu;
+    return m_d8MaxCpu;
 }
 
-uint32 CMainConfig::GetMemoryMax()
+uint64 CMainConfig::GetMemoryMax()
 {
     return m_u4MaxMemory;
 }

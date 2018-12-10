@@ -2,32 +2,22 @@
 
 #include "WindowsCPU.h"
 
-typedef  LONG  (WINAPI*  PROCNTQSI)(UINT,PVOID,ULONG,PULONG);
-PROCNTQSI  NtQuerySystemInformation;
-
-int GetProcessCPU_Idel()
+double GetProcessCPU_Idle()
 {
-    CpuUsage objCpu;
-
-    int nCpuRoteBegin = objCpu.GetUsage();
-    Sleep(1000);
-    int nCpuRoteEnd = objCpu.GetUsage();
-
-    return (int)((nCpuRoteEnd - nCpuRoteBegin) / 2);
+    CpuUsage cpuUsage;
+	return cpuUsage.GetUsageDuration();
 }
 
-int GetProcessMemorySize()
+uint64 GetProcessMemorySize()
 {
-    PROCESS_MEMORY_COUNTERS pmc;
+	PROCESS_MEMORY_COUNTERS pmc = { 0 };
 
     if(::GetProcessMemoryInfo(::GetCurrentProcess(), &pmc, sizeof(pmc)))
     {
-        int nWorkSize = (int)pmc.WorkingSetSize;
-        int nPageSize = (int)pmc.PagefileUsage;
-        return nWorkSize + nPageSize;
+        return (uint64)(pmc.WorkingSetSize + pmc.PagefileUsage);
     }
 
-    return -1;
+    return (0LL);
 }
 
 #endif

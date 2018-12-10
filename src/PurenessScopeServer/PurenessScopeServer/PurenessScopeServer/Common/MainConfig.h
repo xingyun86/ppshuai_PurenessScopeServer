@@ -284,8 +284,8 @@ public:
     uint16 GetBacklog();
     uint16 GetTrackIPCount();
     ENUM_CHAR_ORDER GetCharOrder();
-    uint32 GetCpuMax();
-    uint32 GetMemoryMax();
+    double GetCpuMax();
+    uint64 GetMemoryMax();
     uint8  GetWTAI();
     uint32 GetWTCheckTime();
     uint32 GetWTTimeoutCount();
@@ -339,8 +339,8 @@ private:
     uint32     m_u4CoreFileSize;                       //Core文件的尺寸大小
     uint32     m_u4TrackIPCount;                       //监控IP的最大历史记录数
     uint32     m_u4SendBlockCount;                     //初始化发送缓冲个数
-    uint32     m_u4MaxCpu;                             //监控CPU的最高阀值
-    uint32     m_u4MaxMemory;                          //监控内存的峰值
+    double     m_d8MaxCpu;                             //监控CPU的最高阀值
+    uint64     m_u4MaxMemory;                          //监控内存的峰值
     uint32     m_u4WTCheckTime;                        //工作线程超时包的时间范围，单位是秒
     uint32     m_u4WTTimeoutCount;                     //工作线程超时包的单位时间内的超时次数上限
     uint32     m_u4WTStopTime;                         //停止此命令服务的时间
