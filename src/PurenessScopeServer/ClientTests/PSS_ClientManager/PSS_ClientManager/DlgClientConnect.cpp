@@ -126,7 +126,7 @@ void CDlgClientConnect::OnBnClickedButton1()
         memcpy_s(&d8CpuRote, sizeof(d8CpuRote), &szRecvBuff[nPos], sizeof(d8CpuRote));
         nPos += sizeof(d8CpuRote);
         memcpy_s(&nMemoryRote, sizeof(nMemoryRote), &szRecvBuff[nPos], sizeof(nMemoryRote));
-        nPos += sizeof(int);
+        nPos += sizeof(nMemoryRote);
         memcpy_s(&cFlow, sizeof(char), &szRecvBuff[nPos], sizeof(char));
         nPos += sizeof(char);
         memcpy_s(&nFlowIn, sizeof(int), &szRecvBuff[nPos], sizeof(int));
