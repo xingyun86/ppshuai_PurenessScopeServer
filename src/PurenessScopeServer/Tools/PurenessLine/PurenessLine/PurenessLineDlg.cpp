@@ -15,8 +15,9 @@
 
 CPurenessLineDlg::CPurenessLineDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CPurenessLineDlg::IDD, pParent),
-	m_bUserConnected(FALSE),
-	m_bUserRunning(FALSE)
+	m_hUserThread(NULL),
+	m_bUserRunning(FALSE),
+	m_bUserConnected(NetworkConnectType::NCTYPE_DISCONNECT)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -33,13 +34,14 @@ void CPurenessLineDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CPurenessLineDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_CONTROL(CVN_ViewPortChanged, IDC_CPUVIEW, OnViewPortChanged)
-	ON_CONTROL(CVN_ViewPortChanged, IDC_MEMORYVIEW, OnViewPortChanged)
+	ON_CONTROL(CVN_ViewPortChanged, IDC_CPUVIEW, &CPurenessLineDlg::OnViewPortChanged)
+	ON_CONTROL(CVN_ViewPortChanged, IDC_MEMORYVIEW, &CPurenessLineDlg::OnViewPortChanged)
 	//}}AFX_MSG_MAP
 	ON_WM_CLOSE()
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BUTTON1, &CPurenessLineDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CPurenessLineDlg::OnBnClickedButton2)
+	ON_MESSAGE(WM_USER_NOTIFY, &CPurenessLineDlg::OnUserNotify)
 END_MESSAGE_MAP()
 
 
@@ -67,9 +69,10 @@ void CPurenessLineDlg::InitView()
 	memset(&m_dbMemory, 0, sizeof(m_dbMemory));
 	memset(&m_serverRunInfo, 0, sizeof(m_serverRunInfo));
 
-	setUserConnected(FALSE);
 	SetDlgItemText(IDC_EDIT1, _T("127.0.0.1"));
 	SetDlgItemText(IDC_EDIT2, _T("10010"));
+
+	this->Invalidate();
 
 	//设置随机种子
 	InitRandom();
@@ -85,14 +88,25 @@ DWORD WINAPI CPurenessLineDlg::GetServerStateInfo(void * p)
 {
 	DWORD dwResult = 0L;
 	CPurenessLineDlg * pThis = (CPurenessLineDlg*)p;
-	
+
+	ResetEvent(pThis->m_hQuitEvent);
+
+	pThis->setUserConnected(NetworkConnectType::NCTYPE_DISCONNECT);
 	if (pThis->InitConn())
 	{
+		pThis->setUserConnected(NetworkConnectType::NCTYPE_CONNECTED);
 		while (pThis->IsUserRunning())
 		{
-			if (!pThis->IsUserConnected())
+			if (pThis->getUserConnected() != NetworkConnectType::NCTYPE_CONNECTED)
 			{
-				break;
+				if (!pThis->IsAutoConnect())
+				{
+					break;
+				}
+				pThis->TermConn();
+				pThis->setUserConnected((pThis->InitConn() != TRUE) ? (NetworkConnectType::NCTYPE_RECONNECTING) : NetworkConnectType::NCTYPE_CONNECTED);
+				Sleep(WAIT_TIMEOUT);
+				continue;
 			}
 			int nSend = 0;
 			int nRecv = 0;
@@ -110,12 +124,12 @@ DWORD WINAPI CPurenessLineDlg::GetServerStateInfo(void * p)
 			nSend = pThis->getServerSocket()->Send(szSendData, nAllLen);
 			if (nSend == SOCKET_ERROR)
 			{
-				pThis->setUserConnected(FALSE);
+				pThis->setUserConnected(NetworkConnectType::NCTYPE_RECONNECTING);
 				continue;
 			}
 			if (nSend != nAllLen)
 			{
-				::Sleep(WAIT_TIMEOUT);
+				pThis->setUserConnected(NetworkConnectType::NCTYPE_RECONNECTING);
 				continue;
 			}
 
@@ -125,7 +139,7 @@ DWORD WINAPI CPurenessLineDlg::GetServerStateInfo(void * p)
 			nRecv = pThis->getServerSocket()->Receive(czDataLen, sizeof(czDataLen) / sizeof(*czDataLen));
 			if (nRecv == SOCKET_ERROR)
 			{
-				pThis->setUserConnected(FALSE);
+				pThis->setUserConnected(NetworkConnectType::NCTYPE_RECONNECTING);
 				continue;
 			}
 			memcpy(&nDataLen, czDataLen, sizeof(nDataLen));
@@ -135,7 +149,7 @@ DWORD WINAPI CPurenessLineDlg::GetServerStateInfo(void * p)
 			nRecv = pThis->getServerSocket()->Receive(szBuffRecv, nDataLen);
 			if (nRecv == SOCKET_ERROR)
 			{
-				pThis->setUserConnected(FALSE);
+				pThis->setUserConnected(NetworkConnectType::NCTYPE_RECONNECTING);
 				continue;
 			}
 
@@ -152,27 +166,37 @@ DWORD WINAPI CPurenessLineDlg::GetServerStateInfo(void * p)
 			::Sleep(WAIT_TIMEOUT);
 		}
 		pThis->TermConn();
+		pThis->setUserConnected(NetworkConnectType::NCTYPE_DISCONNECT);
 	}
-	
+
+	SetEvent(pThis->m_hQuitEvent);
+
 	return dwResult;
 }
+
+LRESULT CPurenessLineDlg::OnUserNotify(WPARAM /*wParam*/, LPARAM /*lParam*/)
+{
+	this->setUserControlText();
+	return 0;
+}
+
 // 如果向对话框添加最小化按钮，则需要下面的代码
 //  来绘制该图标。对于使用文档/视图模型的 MFC 应用程序，
 //  这将由框架自动完成。
 
 void CPurenessLineDlg::OnViewPortChanged()
 {
-	if (IsUserConnected())
-	{
-		//设置数据
-		shiftData(m_dbCPU, MAX_DATA_COUNT, (double)m_serverRunInfo.m_dCPU);
-		shiftData(m_dbMemory, MAX_DATA_COUNT, (double)m_serverRunInfo.m_nMemorySize / (1024 * 1024));
-	}
-	else
+	if (getUserConnected() != NetworkConnectType::NCTYPE_CONNECTED)
 	{
 		//设置数据
 		shiftData(m_dbCPU, MAX_DATA_COUNT, (double)0.0f);
 		shiftData(m_dbMemory, MAX_DATA_COUNT, (double)0.0f);
+	}
+	else
+	{
+		//设置数据
+		shiftData(m_dbCPU, MAX_DATA_COUNT, (double)m_serverRunInfo.m_dCPU);
+		shiftData(m_dbMemory, MAX_DATA_COUNT, (double)m_serverRunInfo.m_nMemorySize / (1024 * 1024));
 	}
 
 	//绘制相应的数据图表
@@ -226,9 +250,12 @@ void CPurenessLineDlg::drawChart()
 	RECT rcMEM = { 0 };
 	RECT rcSpace = { 0 };
 	RECT rcInnerSpace = { 0 };
-	const char* szLabels[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-		"11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23",
-		"24"};
+	const char* szLabels[] = {
+		"0", "1", "2", "3", "4", "5", 
+		"6", "7", "8", "9", "10", "11", 
+		"12", "13", "14", "15", "16", "17", 
+		"18", "19", "20", "21", "22", "23", "24"
+	};
 
 	XYChart* pXYCPU    = NULL;
 	XYChart* pXYMemory = NULL;

@@ -2144,13 +2144,13 @@ void CConsoleMessage::DoMessage_ShowProcessInfo(_CommandInfo& CommandInfo, IBuff
         //得到所有出口流量统计
         App_ProConnectManager::instance()->GetCommandFlowAccount(objCommandFlowOut);
 
-        double dCPU = App_ProComputerUsageManager::instance()->GetProcessCPU_Idle();
-        uint64 nMemorySize = App_ProComputerUsageManager::instance()->GetProcessMemorySize();
+        double d8CurrCpu = App_ProComputerUsageManager::instance()->GetProcessCPU_Idle();
+        uint64 u4CurrMemory = App_ProComputerUsageManager::instance()->GetProcessMemorySize();
 
         if (CommandInfo.m_u1OutputType == 0)
         {
-            (*pBuffPacket) << (double)dCPU;
-            (*pBuffPacket) << (uint64)nMemorySize;
+            (*pBuffPacket) << (double)d8CurrCpu;
+            (*pBuffPacket) << (uint64)u4CurrMemory;
             (*pBuffPacket) << (uint8)objCommandFlowIn.m_u1FLow;
             (*pBuffPacket) << (uint32)objCommandFlowIn.m_u4FlowIn;
             (*pBuffPacket) << (uint32)objCommandFlowOut.m_u4FlowOut;
@@ -2158,9 +2158,9 @@ void CConsoleMessage::DoMessage_ShowProcessInfo(_CommandInfo& CommandInfo, IBuff
         else
         {
             char szTemp[MAX_BUFF_1024] = { '\0' };
-            sprintf_safe(szTemp, MAX_BUFF_1024, "CPUUsedRote(%lg%%)\n", dCPU);
+            sprintf_safe(szTemp, MAX_BUFF_1024, "CPUUsedRote(%g%%)\n", d8CurrCpu);
             pBuffPacket->WriteStream(szTemp, (uint32)ACE_OS::strlen(szTemp));
-            sprintf_safe(szTemp, MAX_BUFF_1024, "MemorySize(%lld Byte)\n", nMemorySize);
+            sprintf_safe(szTemp, MAX_BUFF_1024, "MemorySize(%lld Bytes)\n", u4CurrMemory);
             pBuffPacket->WriteStream(szTemp, (uint32)ACE_OS::strlen(szTemp));
             sprintf_safe(szTemp, MAX_BUFF_1024, "FLowSize(%d)\n", objCommandFlowIn.m_u1FLow);
             pBuffPacket->WriteStream(szTemp, (uint32)ACE_OS::strlen(szTemp));
@@ -2174,13 +2174,13 @@ void CConsoleMessage::DoMessage_ShowProcessInfo(_CommandInfo& CommandInfo, IBuff
 #else   //如果是linux
         App_ConnectManager::instance()->GetCommandFlowAccount(objCommandFlowOut);
 
-		double dCPU = GetProcessCPU_Idle_Linux();
-        uint64 nMemorySize = GetProcessMemorySize_Linux();
+		double d8CurrCpu = GetProcessCPU_Idle_Linux();
+        uint64 u4CurrMemory = GetProcessMemorySize_Linux();
 
         if (CommandInfo.m_u1OutputType == 0)
         {
-            (*pBuffPacket) << (double)dCPU;
-            (*pBuffPacket) << (uint64)nMemorySize;
+            (*pBuffPacket) << (double)d8CurrCpu;
+            (*pBuffPacket) << (uint64)u4CurrMemory;
             (*pBuffPacket) << (uint8)objCommandFlowIn.m_u1FLow;
             (*pBuffPacket) << (uint32)objCommandFlowIn.m_u4FlowIn;
             (*pBuffPacket) << (uint32)objCommandFlowOut.m_u4FlowOut;
@@ -2188,9 +2188,9 @@ void CConsoleMessage::DoMessage_ShowProcessInfo(_CommandInfo& CommandInfo, IBuff
         else
         {
             char szTemp[MAX_BUFF_1024] = { '\0' };
-            sprintf_safe(szTemp, MAX_BUFF_1024, "CPUUsedRote(%lg%%)\n", dCPU);
+            sprintf_safe(szTemp, MAX_BUFF_1024, "CPUUsedRote(%g%%)\n", d8CurrCpu);
             pBuffPacket->WriteStream(szTemp, (uint32)ACE_OS::strlen(szTemp));
-            sprintf_safe(szTemp, MAX_BUFF_1024, "MemorySize(%lld Byte)\n", nMemorySize);
+            sprintf_safe(szTemp, MAX_BUFF_1024, "MemorySize(%lld Bytes)\n", u4CurrMemory);
             pBuffPacket->WriteStream(szTemp, (uint32)ACE_OS::strlen(szTemp));
             sprintf_safe(szTemp, MAX_BUFF_1024, "FLowSize(%d)\n", objCommandFlowIn.m_u1FLow);
             pBuffPacket->WriteStream(szTemp, (uint32)ACE_OS::strlen(szTemp));

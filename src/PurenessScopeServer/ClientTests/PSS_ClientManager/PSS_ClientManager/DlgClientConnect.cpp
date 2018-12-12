@@ -135,11 +135,11 @@ void CDlgClientConnect::OnBnClickedButton1()
         nPos += sizeof(int);
 
         CString strCpuRote;
-        strCpuRote.Format(_T("%lg"), d8CpuRote);
+        strCpuRote.Format(_T("%g"), d8CpuRote);
         m_txtCpu.SetWindowText(strCpuRote);
 
         CString strMemoryRote;
-        strMemoryRote.Format(_T("%lg"), (double)nMemoryRote/(1024.0f*1024.0f));
+        strMemoryRote.Format(_T("%g"), (double)nMemoryRote/(1024.0f*1024.0f));
         m_txtMemory.SetWindowText(strMemoryRote);
 
         if(cFlow == 0)

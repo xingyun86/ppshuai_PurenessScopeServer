@@ -5,6 +5,9 @@
 #pragma once
 
 #include "ChartViewer.h"
+
+#define WM_USER_NOTIFY (WM_USER + 1)
+
 #include <stdlib.h>
 #include <time.h>
 #include "afxwin.h"
@@ -71,12 +74,13 @@ protected:
 	afx_msg void OnClose();
 	afx_msg void OnViewPortChanged();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton2();
+	afx_msg LRESULT OnUserNotify(WPARAM /*wParam*/, LPARAM /*lParam*/);
 	DECLARE_MESSAGE_MAP()
 
 	CEdit m_txtServerIP;
 	CEdit m_txtServerPort;
-	afx_msg void OnBnClickedButton1();
-	afx_msg void OnBnClickedButton2();
 
 private:
 	void shiftData(double *data, int len, double newValue);
@@ -85,88 +89,124 @@ private:
 	static DWORD WINAPI GetServerStateInfo(void * p);
 	BOOL StartUserThread() {
 		m_bUserRunning = TRUE;
+		// Create a manual-reset event object. The write thread sets this
+		// object to the signaled state when it finishes writing to a 
+		// shared buffer. 
+		m_hQuitEvent = CreateEvent(
+			NULL,               // default security attributes
+			TRUE,               // manual-reset event
+			FALSE,              // initial state is nonsignaled
+			TEXT("__EVENT")  // object name
+		);
 		m_hUserThread = CreateThread(NULL, 0, &CPurenessLineDlg::GetServerStateInfo, this, 0, &m_dwUserThreadId);
-		return (m_hUserThread && m_hUserThread != INVALID_HANDLE_VALUE);
+		return (m_hUserThread && (m_hUserThread != INVALID_HANDLE_VALUE));
 	}
 	void StopUserThread() {
-		if (m_bUserConnected)
-		{
-			this->setUserConnected(FALSE);
-		}
-		if (m_hUserThread && m_hUserThread != INVALID_HANDLE_VALUE)
+		if (m_bUserRunning)
 		{
 			m_bUserRunning = FALSE;
+		}
+		if (m_bUserConnected != NetworkConnectType::NCTYPE_DISCONNECT)
+		{
+			this->setUserConnected(NetworkConnectType::NCTYPE_DISCONNECT);
+		}
+		if (m_hUserThread && (m_hUserThread != INVALID_HANDLE_VALUE))
+		{
+			if (WaitForSingleObject(m_hUserThread, INFINITE) == WAIT_OBJECT_0)
+			{
+				;//
+			}
 			CloseHandle(m_hUserThread);
 			m_hUserThread = 0;
-			m_dwUserThreadId = 0;
+		}
+		m_dwUserThreadId = 0;
+		if (m_hQuitEvent && (m_hQuitEvent != INVALID_HANDLE_VALUE))
+		{
+			CloseHandle(m_hQuitEvent);
+			m_hQuitEvent = NULL;
 		}
 	}
 public:
+	VOID sendUserNotify() {
+		PostMessage(WM_USER_NOTIFY);
+	}
+	BOOL IsAutoConnect() { 
+		return (((CButton*)this->GetDlgItem(IDC_CHECK1))->GetCheck() == BST_CHECKED); 
+	}
 	BOOL InitConn() {
 		//解析端口地址
 		int nPort = 0;
 		BOOL blFlag = FALSE;
+		_TCHAR szErrMsg[MAXCHAR] = { _T('\0') };
+
 		nPort = _ttoi(this->getServerPort());
-
-		this->setUserConnected(FALSE);
-
+		
 		AfxSocketInit();
 
 		blFlag = this->getServerSocket()->Create();
-		if (FALSE == blFlag)
+		if (!blFlag)
 		{
-			this->MessageBox(_T("初始化Socket失败。"), _T("链接信息"), MB_OK);
+			_stprintf(szErrMsg, _T("初始化Socket失败。\n"));
+			//this->MessageBox(szErrMsg, _T("链接信息"), MB_OK);
+			OutputDebugString(szErrMsg);
 			return (FALSE);
 		}
 
 		blFlag = this->getServerSocket()->Connect(this->getServerIP(), nPort);
-		if (FALSE == blFlag)
+		if (!blFlag)
 		{
-			_TCHAR szError[MAXCHAR] = { _T('\0') };
-			wsprintf(szError, _T("链接[%s]，端口[%d]失败，error[%d]。"), this->getServerIP(), nPort, GetLastError());
-			this->MessageBox((LPCTSTR)szError, _T("链接信息"), MB_OK);
-			this->getServerSocket()->ShutDown();
-			this->getServerSocket()->Close();
-			AfxSocketTerm();
+			_stprintf(szErrMsg, _T("链接[%s]，端口[%d]失败，error[%d]。\n"), this->getServerIP(), nPort, GetLastError());
+			//this->MessageBox(szErrMsg, _T("链接信息"), MB_OK);
+			OutputDebugString(szErrMsg);
+			this->TermConn();
 			return (FALSE);
 		}
-
-		this->setUserConnected(TRUE);
-
+		
 		return TRUE;
 	}
 	VOID TermConn()
 	{
 		this->getServerSocket()->ShutDown();
 		this->getServerSocket()->Close();
-		this->setUserConnected(FALSE);
 		AfxSocketTerm();
 	}
 public:
+	HANDLE GetQuitEvent() { return m_hQuitEvent; }
 	BOOL IsUserRunning() { return m_bUserRunning; }
-	BOOL IsUserConnected() { return m_bUserConnected; }
-	VOID setUserConnected(BOOL bUserConnected) { 
-		m_bUserConnected = bUserConnected;
-		this->GetDlgItem(IDC_EDIT1)->EnableWindow(!m_bUserConnected);
-		this->GetDlgItem(IDC_EDIT2)->EnableWindow(!m_bUserConnected);
-		this->GetDlgItem(IDC_BUTTON1)->EnableWindow(!m_bUserConnected);
-		this->GetDlgItem(IDC_BUTTON2)->EnableWindow(m_bUserConnected);
+	enum NetworkConnectType {
+		NCTYPE_RECONNECTING = 0,
+		NCTYPE_DISCONNECT = 1,
+		NCTYPE_CONNECTED = 2,
+	};
+	BOOL getUserConnected() { return m_bUserConnected; }
+	VOID setUserConnected(NetworkConnectType bUserConnected) {
+		this->m_bUserConnected = bUserConnected;
+		this->sendUserNotify();
+	}
+	VOID setUserControlText()
+	{
+		this->GetDlgItem(IDC_BUTTON1)->SetWindowText((m_bUserConnected != NetworkConnectType::NCTYPE_CONNECTED) ? ((m_bUserConnected != NetworkConnectType::NCTYPE_DISCONNECT) ? _T("正在重连...") : _T("开始监听")) : _T("正在监听..."));
+		this->GetDlgItem(IDC_EDIT1)->EnableWindow((m_bUserConnected != NetworkConnectType::NCTYPE_CONNECTED));
+		this->GetDlgItem(IDC_EDIT2)->EnableWindow((m_bUserConnected != NetworkConnectType::NCTYPE_CONNECTED));
+		this->GetDlgItem(IDC_BUTTON1)->EnableWindow((m_bUserConnected != NetworkConnectType::NCTYPE_CONNECTED) & (m_bUserConnected != NetworkConnectType::NCTYPE_RECONNECTING));
+		this->GetDlgItem(IDC_BUTTON2)->EnableWindow((m_bUserConnected == NetworkConnectType::NCTYPE_CONNECTED) | (m_bUserConnected == NetworkConnectType::NCTYPE_RECONNECTING));
 	}
 	CSocket * getServerSocket() { return &m_socketServer; }
 	ServerRunInfo * getServerRunInfo() { return &m_serverRunInfo; }
 	LPCTSTR getServerIP() { return m_strServerIP; };
 	LPCTSTR getServerPort() { return m_strServerPort; };
 private:
-	CChartViewer	m_cvCPU;                     //CPU使用量
-	CChartViewer	m_cvMemory;                  //内存使用量
-	double			m_dbCPU[MAX_DATA_COUNT];
-	double			m_dbMemory[MAX_DATA_COUNT];
-	CString			m_strServerIP;
-	CString			m_strServerPort;
-	CSocket			m_socketServer;                 //链接远程Server服务器
-	BOOL			m_bUserConnected;                   //链接状态
-	ServerRunInfo	m_serverRunInfo;			  //最新服务器运行状态
-	DWORD			m_dwUserThreadId;//用户线程标识
-	HANDLE			m_hUserThread;//用户线程句柄
-	BOOL			m_bUserRunning;//用户线程状态
+	CChartViewer		m_cvCPU;                     //CPU使用量
+	CChartViewer		m_cvMemory;                  //内存使用量
+	double				m_dbCPU[MAX_DATA_COUNT];
+	double				m_dbMemory[MAX_DATA_COUNT];
+	CString				m_strServerIP;
+	CString				m_strServerPort;
+	CSocket				m_socketServer;   //链接远程Server服务器
+	NetworkConnectType	m_bUserConnected; //链接状态
+	ServerRunInfo		m_serverRunInfo;//最新服务器运行状态
+	DWORD				m_dwUserThreadId;//用户线程标识
+	HANDLE				m_hUserThread;//用户线程句柄
+	BOOL				m_bUserRunning;//用户线程状态
+	HANDLE				m_hQuitEvent;//退出事件句柄
 };
