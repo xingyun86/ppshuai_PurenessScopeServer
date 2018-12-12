@@ -1055,8 +1055,8 @@ bool CMessageServiceGroup::CheckCPUAndMemory()
     if (App_MainConfig::instance()->GetMonitor() == 1)
     {
 #ifdef WIN32
-        double d8CurrCpu = (double)GetProcessCPU_Idle();
-        //uint64 u4CurrMemory = (uint64)GetProcessMemorySize();
+        double d8CurrCpu = (double)App_ProComputerUsageManager::instance()->GetProcessCPU_Idle();
+        //uint64 u4CurrMemory = (uint64)App_ProComputerUsageManager::instance()->GetProcessMemorySize();
 #else
 		double d8CurrCpu = (double)GetProcessCPU_Idle_Linux();
         //uint64 u4CurrMemory = (uint64)GetProcessMemorySize_Linux();

@@ -2144,8 +2144,8 @@ void CConsoleMessage::DoMessage_ShowProcessInfo(_CommandInfo& CommandInfo, IBuff
         //得到所有出口流量统计
         App_ProConnectManager::instance()->GetCommandFlowAccount(objCommandFlowOut);
 
-        double dCPU = GetProcessCPU_Idle();
-        uint64 nMemorySize = GetProcessMemorySize();
+        double dCPU = App_ProComputerUsageManager::instance()->GetProcessCPU_Idle();
+        uint64 nMemorySize = App_ProComputerUsageManager::instance()->GetProcessMemorySize();
 
         if (CommandInfo.m_u1OutputType == 0)
         {

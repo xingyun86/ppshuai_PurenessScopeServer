@@ -2,22 +2,21 @@
 
 #include "WindowsCPU.h"
 
-double GetProcessCPU_Idle()
+double CComputerUsage::GetProcessCPU_Idle()
 {
-    CpuUsage cpuUsage;
-	return cpuUsage.GetUsageDuration();
+	return cpuUsage.GetUsage();
 }
 
-uint64 GetProcessMemorySize()
+uint64 CComputerUsage::GetProcessMemorySize()
 {
 	PROCESS_MEMORY_COUNTERS pmc = { 0 };
 
-    if(::GetProcessMemoryInfo(::GetCurrentProcess(), &pmc, sizeof(pmc)))
-    {
-        return (uint64)(pmc.WorkingSetSize + pmc.PagefileUsage);
-    }
+	if (::GetProcessMemoryInfo(::GetCurrentProcess(), &pmc, sizeof(pmc)))
+	{
+		return (uint64)(pmc.WorkingSetSize + pmc.PagefileUsage);
+	}
 
-    return (0LL);
+	return (0LL);
 }
 
 #endif
